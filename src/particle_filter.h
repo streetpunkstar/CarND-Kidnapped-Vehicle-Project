@@ -23,14 +23,10 @@ struct Particle {
 	std::vector<double> sense_y;
 };
 
-
-
 class ParticleFilter {
 	
 	// Number of particles to draw
 	int num_particles; 
-	
-	
 	
 	// Flag, if filter is initialized
 	bool is_initialized;
@@ -49,6 +45,8 @@ public:
 
 	// Destructor
 	~ParticleFilter() {}
+
+	void showparticles();
 
 	/**
 	 * init Initializes particle filter by initializing particles to Gaussian
@@ -79,7 +77,11 @@ public:
 	 * @param observations Vector of landmark observations
 	 */
 	void dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations);
-	
+
+	double MultiGaussProb(double sigma[], double x_obs, double y_obs, double x_mu, double y_mu);
+
+	double* TransformtoMapCoords(double x_obs_veh, double y_obs_veh, double x_obs_part, double y_obs_part, double heading_part);
+
 	/**
 	 * updateWeights Updates the weights for each particle based on the likelihood of the 
 	 *   observed measurements. 
@@ -104,7 +106,6 @@ public:
 	Particle SetAssociations(Particle& particle, const std::vector<int>& associations,
 		                     const std::vector<double>& sense_x, const std::vector<double>& sense_y);
 
-	
 	std::string getAssociations(Particle best);
 	std::string getSenseX(Particle best);
 	std::string getSenseY(Particle best);
@@ -116,7 +117,5 @@ public:
 		return is_initialized;
 	}
 };
-
-
 
 #endif /* PARTICLE_FILTER_H_ */

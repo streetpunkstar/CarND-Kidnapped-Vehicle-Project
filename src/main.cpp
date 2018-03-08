@@ -67,20 +67,23 @@ int main()
 
           if (!pf.initialized()) {
 
-          	// Sense noisy position data from the simulator
-			double sense_x = std::stod(j[1]["sense_x"].get<std::string>());
-			double sense_y = std::stod(j[1]["sense_y"].get<std::string>());
-			double sense_theta = std::stod(j[1]["sense_theta"].get<std::string>());
+          // Sense noisy position data from the simulator
+          double sense_x = std::stod(j[1]["sense_x"].get<std::string>());
+          double sense_y = std::stod(j[1]["sense_y"].get<std::string>());
+          double sense_theta = std::stod(j[1]["sense_theta"].get<std::string>());
 
-			pf.init(sense_x, sense_y, sense_theta, sigma_pos);
-		  }
-		  else {
-			// Predict the vehicle's next state from previous (noiseless control) data.
-		  	double previous_velocity = std::stod(j[1]["previous_velocity"].get<std::string>());
-			double previous_yawrate = std::stod(j[1]["previous_yawrate"].get<std::string>());
+          pf.init(sense_x, sense_y, sense_theta, sigma_pos);
 
-			pf.prediction(delta_t, sigma_pos, previous_velocity, previous_yawrate);
-		  }
+          }
+          else {
+
+          // Predict the vehicle's next state from previous (noiseless control) data.
+          double previous_velocity = std::stod(j[1]["previous_velocity"].get<std::string>());
+          double previous_yawrate = std::stod(j[1]["previous_yawrate"].get<std::string>());
+
+          pf.prediction(delta_t, sigma_pos, previous_velocity, previous_yawrate);
+
+          }
 
 		  // receive noisy observation data from the simulator
 		  // sense_observations in JSON format [{obs_x,obs_y},{obs_x,obs_y},...{obs_x,obs_y}]
@@ -92,23 +95,22 @@ int main()
   			std::istringstream iss_x(sense_observations_x);
 
   			std::copy(std::istream_iterator<float>(iss_x),
-        	std::istream_iterator<float>(),
-        	std::back_inserter(x_sense));
+  			          std::istream_iterator<float>(),
+  			          std::back_inserter(x_sense));
 
-        	std::vector<float> y_sense;
+  			std::vector<float> y_sense;
   			std::istringstream iss_y(sense_observations_y);
 
   			std::copy(std::istream_iterator<float>(iss_y),
-        	std::istream_iterator<float>(),
-        	std::back_inserter(y_sense));
+  			          std::istream_iterator<float>(),
+  			          std::back_inserter(y_sense));
 
-        	for(int i = 0; i < x_sense.size(); i++)
-        	{
-        		LandmarkObs obs;
-        		obs.x = x_sense[i];
-				obs.y = y_sense[i];
-				noisy_observations.push_back(obs);
-        	}
+  			for(int i = 0; i < x_sense.size(); i++) {
+  			  LandmarkObs obs;
+  			  obs.x = x_sense[i];
+  			  obs.y = y_sense[i];
+  			  noisy_observations.push_back(obs);
+  			}
 
 		  // Update the weights and resample
 		  pf.updateWeights(sensor_range, sigma_landmark, noisy_observations, map);
@@ -127,8 +129,8 @@ int main()
 			}
 			weight_sum += particles[i].weight;
 		  }
-		  cout << "highest w " << highest_weight << endl;
-		  cout << "average w " << weight_sum/num_particles << endl;
+		  cout << "highest w " << setprecision(3) << highest_weight << "; ";
+		  cout << "average w " << setprecision(3) << weight_sum/num_particles << endl;
 
           json msgJson;
           msgJson["best_particle_x"] = best_particle.x;
