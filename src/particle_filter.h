@@ -80,8 +80,6 @@ public:
 
 	double MultiGaussProb(double sigma[], double x_obs, double y_obs, double x_mu, double y_mu);
 
-	double* TransformtoMapCoords(double x_obs_veh, double y_obs_veh, double x_obs_part, double y_obs_part, double heading_part);
-
 	/**
 	 * updateWeights Updates the weights for each particle based on the likelihood of the 
 	 *   observed measurements. 
