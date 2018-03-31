@@ -45,6 +45,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
       p.weight = 1.0;
 
       particles.push_back(p);
+      weights.push_back(1);
 
     }
 
@@ -150,7 +151,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
     for (unsigned int k = 0; k < observations.size(); ++k) {
       LandmarkObs o;
 
-      o.x = particles[r].x + observations[k].x * cos(particles[r].theta) - observations[k].y * sin(observations[k].y);
+      o.x = particles[r].x + observations[k].x * cos(particles[r].theta) - observations[k].y * sin(particles[r].theta);
       o.y = particles[r].y + observations[k].x * sin(particles[r].theta) + observations[k].y * cos(particles[r].theta);
       o.id = observations[k].id;
 
@@ -177,7 +178,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], c
 
       double multigauss = MultiGaussProb(std_landmark, measurement_x, measurement_y, nearest_x, nearest_y);
 
-      if (multigauss > 0) {
+      if (multigauss != 0) {
         particles[r].weight *= multigauss;
       }
     }
